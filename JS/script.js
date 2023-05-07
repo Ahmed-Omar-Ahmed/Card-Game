@@ -37,26 +37,77 @@ const loseColor = "red";
 const primaryColor = "black";
 
 let roundNum = 0;
-let maxRound = 10;
+let maxRounds = 10;
 let score = 0;
+let standardPoints = 50;
+
+let gameObj = {};
+
+const localStorageGameKey = "HTA";
 
 loadGame();
+
+function gameOver() {
+  updateStatusElement(scoreContainerElem, "none");
+  updateStatusElement(roundContainerElem, "none");
+  const gameOverMessage = `Game Over! Final Score - <span class = "badge">${score}</span> Click "Play Game" to play again!`;
+
+  updateStatusElement(
+    currentGameStatusElem,
+    "block",
+    primaryColor,
+    gameOverMessage
+  );
+
+  gameInProgress = false;
+  startGameBtnElem.disabled = false;
+}
+
+function endRound() {
+  setTimeout(() => {
+    if (roundNum == maxRounds) {
+      gameOver();
+      return;
+    } else {
+      startRound();
+    }
+  }, 3000);
+}
 
 function chooseCard(card) {
   if (canChooseCard()) {
     evaluateCardChoice(card);
+    saveGameObjectToLoclStorage(score, roundNum);
     flipCard(card, false);
+
+    setTimeout(() => {
+      flipCards(false);
+      updateStatusElement(
+        currentGameStatusElem,
+        "block",
+        primaryColor,
+        "Card positions revealed"
+      );
+      endRound();
+    }, 3000);
+    cardsRevealed = true;
   }
 }
 
 function calculateScoreToAdd(roundNum) {
-  let standardPoints = 50;
-  return roundNum * 50;
+  const scoreToAdd = roundNum * standardPoints;
+  score = score + scoreToAdd;
+  return score;
 }
 
 function updateScore() {
-  const scoreToAdd = calculateScoreToAdd(roundNum);
-  score = score + scoreToAdd;
+  calculateScoreToAdd(roundNum);
+  updateStatusElement(
+    scoreElem,
+    "block",
+    primaryColor,
+    `<span class="badge">${score}</span>`
+  );
 }
 
 function updateStatusElement(elem, display, color, innerHTML) {
@@ -102,8 +153,28 @@ function canChooseCard() {
 function loadGame() {
   createCards();
   cards = document.querySelectorAll(".card");
+  cardFlyInEffect();
 
   startGameBtnElem.addEventListener("click", () => startGame());
+
+  updateStatusElement(scoreContainerElem, "none");
+  updateStatusElement(roundContainerElem, "none");
+}
+
+function checkForIncompleteGame() {
+  const serializedGameObj = getLocalStorageItemValue(localStorageGameKey);
+  if (serializedGameObj) {
+    gameObj = getObjectFromJSON(serializedGameObj);
+
+    if (gameObj.round >= maxRounds) {
+      removeLocalStorageItem(localStorageGameKey);
+    } else {
+      if (confirm("Would you like to continue from where you left?")) {
+        score = gameObj.score;
+        roundNum = gameObj.round;
+      }
+    }
+  }
 }
 
 function startGame() {
@@ -114,6 +185,8 @@ function startGame() {
 function intializeNewGame() {
   score = 0;
   roundNum = 0;
+
+  checkForIncompleteGame();
   shufflingInProgress = false;
   updateStatusElement(scoreContainerElem, "flex");
   updateStatusElement(roundContainerElem, "flex");
@@ -140,7 +213,7 @@ function startRound() {
 
 function intializeNewRound() {
   roundNum++;
-  // startGameBtnElem.disabled = true;
+  startGameBtnElem.disabled = true;
   gameInProgress = true;
   shufflingInProgress = true;
   cardsRevealed = false;
@@ -193,16 +266,69 @@ function flipCards(flipToBack) {
   });
 }
 
+function cardFlyInEffect() {
+  const id = setInterval(flyIn, 5);
+  let cardCount = 0;
+  let count = 0;
+
+  function flyIn() {
+    count++;
+    if (cardCount == numCards) {
+      clearInterval(id);
+      startGameBtnElem.style.scale = 1;
+      startGameBtnElem.style.opacity = 1;
+    }
+    if (count == 1 || count == 100 || count == 200 || count == 300) {
+      cardCount++;
+      let card = document.getElementById(cardCount);
+      card.classList.remove("fly-in");
+    }
+  }
+}
+
+function removeShuffleClasses() {
+  cards.forEach((card) => {
+    card.classList.remove("shuffle-left");
+    card.classList.remove("shuffle-right");
+  });
+}
+
+function animateShuffle(shuffleCount) {
+  const random1 = Math.floor(Math.random() * numCards) + 1;
+  const random2 = Math.floor(Math.random() * numCards) + 1;
+
+  let card1 = document.getElementById(random1);
+  let card2 = document.getElementById(random2);
+
+  if (shuffleCount % 4 == 0) {
+    card1.classList.toggle("shuffle-left");
+    card1.style.zIndex = 100;
+  }
+
+  if (shuffleCount % 10 == 0) {
+    card2.classList.toggle("shuffle-right");
+    card2.style.zIndex = 200;
+  }
+}
+
 function shuffleCards() {
   const id = setInterval(shuffle, 12);
   let shuffleCount = 0;
 
   function shuffle() {
     randomizeCardPosition();
-
+    animateShuffle(shuffleCount);
     if (shuffleCount == 500) {
       clearInterval(id);
+      shufflingInProgress = false;
+      removeShuffleClasses();
       dealCards();
+      updateStatusElement(
+        currentGameStatusElem,
+        "block",
+        primaryColor,
+        "Pick a Card!"
+      );
     } else {
       shuffleCount++;
     }
@@ -272,6 +398,7 @@ function createCard(cardItem) {
   const cardBackImg = createElement("img");
 
   addClassToElement(cardElem, "card");
+  addClassToElement(cardElem, "fly-in");
   addIdToElement(cardElem, cardItem.id);
 
   addClassToElement(cardInsideElem, "card-inside");
@@ -297,6 +424,11 @@ function createCard(cardItem) {
 
   addCardToGridCell(cardElem);
   intializeCardPositions(cardElem);
+  attachClickEventHandlerToCard(cardElem);
+}
+
+function attachClickEventHandlerToCard(card) {
+  card.addEventListener("click", () => chooseCard(card));
 }
 
 function intializeCardPositions(card) {
@@ -339,4 +471,34 @@ function mapCardToGridCell(card) {
   } else if (card.id == 4) {
     return ".card-pos-d";
   }
+}
+
+function getSerializedObjAsJSON(obj) {
+  return JSON.stringify(obj);
+}
+
+function getObjectFromJSON(json) {
+  return JSON.parse(json);
+}
+
+function updateLocalStorageItem(key, value) {
+  localStorage.setItem(key, value);
+}
+
+function getLocalStorageItemValue(key) {
+  return localStorage.getItem(key);
+}
+
+function removeLocalStorageItem(key) {
+  localStorage.removeItem(key);
+}
+
+function updateGameObject(score, round) {
+  gameObj.score = score;
+  gameObj.round = round;
+}
+
+function saveGameObjectToLoclStorage(score, round) {
+  updateGameObject(score, round);
+  updateLocalStorageItem(localStorageGameKey, getSerializedObjAsJSON(gameObj));
 }
