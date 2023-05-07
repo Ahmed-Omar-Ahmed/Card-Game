@@ -1,0 +1,115 @@
+:root {
+  --card-width: 157px;
+  --card-height: 220px;
+  --num-cards: 4;
+  --card-horizontal-space: 100px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background-color: #fffffa;
+}
+
+main {
+  height: calc(var(--num-cards) * var(--card-height) / 2 + 10px);
+  display: flex;
+  justify-content: center;
+
+  .card-container {
+    position: relative;
+    height: 100%;
+    width: calc(
+      var(--card-width) * var(--num-cards) / 2 + var(--card-horizontal-space)
+    );
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+      "a b"
+      "c d";
+
+    .card-pos-a {
+      grid-area: a;
+    }
+
+    .card-pos-b {
+      grid-area: b;
+    }
+
+    .card-pos-c {
+      grid-area: c;
+    }
+
+    .card-pos-d {
+      grid-area: d;
+    }
+
+    .card-pos-a,
+    .card-pos-b,
+    .card-pos-c,
+    .card-pos-d {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      position: absolute;
+      height: var(--card-height);
+      width: var(--card-width);
+      perspective: 1000px;
+      cursor: pointer;
+
+      &:hover {
+        .card-inside {
+          transform: rotate3d(0, 1, 0, 180deg);
+          // animation: revolve 1s linear 2 forwards;
+        }
+      }
+
+      .card-inside {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: 0.6s;
+        transform-style: preserve-3d;
+
+        &.flip-it {
+          transform: rotateY(180deg);
+        }
+
+        .front-side,
+        .back-side {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+
+          .card-img {
+            height: 100%;
+          }
+        }
+
+        .back-side {
+          transform: rotateY(180deg);
+        }
+      }
+    }
+  }
+}
+
+// @keyframes revolve {
+//   from {
+//     transform: rotateX(0) rotateY(0) rotateZ(0);
+//   }
+
+//   to {
+//     transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg);
+//   }
+// }

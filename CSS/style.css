@@ -1,0 +1,85 @@
+:root {
+  --card-width: 157px;
+  --card-height: 220px;
+  --num-cards: 4;
+  --card-horizontal-space: 100px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background-color: #fffffa;
+}
+
+main {
+  height: calc(var(--num-cards) * var(--card-height) / 2 + 10px);
+  display: flex;
+  justify-content: center;
+}
+main .card-container {
+  position: relative;
+  height: 100%;
+  width: calc(var(--card-width) * var(--num-cards) / 2 + var(--card-horizontal-space));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "a b" "c d";
+}
+main .card-container .card-pos-a {
+  grid-area: a;
+}
+main .card-container .card-pos-b {
+  grid-area: b;
+}
+main .card-container .card-pos-c {
+  grid-area: c;
+}
+main .card-container .card-pos-d {
+  grid-area: d;
+}
+main .card-container .card-pos-a,
+main .card-container .card-pos-b,
+main .card-container .card-pos-c,
+main .card-container .card-pos-d {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+main .card-container .card {
+  position: absolute;
+  height: var(--card-height);
+  width: var(--card-width);
+  perspective: 1000px;
+  cursor: pointer;
+}
+main .card-container .card:hover .card-inside {
+  transform: rotate3d(0, 1, 0, 180deg);
+}
+main .card-container .card .card-inside {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: 0.6s;
+  transform-style: preserve-3d;
+}
+main .card-container .card .card-inside.flip-it {
+  transform: rotateY(180deg);
+}
+main .card-container .card .card-inside .front-side,
+main .card-container .card .card-inside .back-side {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+main .card-container .card .card-inside .front-side .card-img,
+main .card-container .card .card-inside .back-side .card-img {
+  height: 100%;
+}
+main .card-container .card .card-inside .back-side {
+  transform: rotateY(180deg);
+}/*# sourceMappingURL=style.css.map */
