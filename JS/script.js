@@ -50,7 +50,7 @@ loadGame();
 function gameOver() {
   updateStatusElement(scoreContainerElem, "none");
   updateStatusElement(roundContainerElem, "none");
-  const gameOverMessage = `Game Over! Final Score - <span class = "badge">${score}</span> Click "Play Game" to play again!`;
+  const gameOverMessage = `Game Over! Final Score: <span class = "badge">${score}</span> Click "Start Game" to play again!`;
 
   updateStatusElement(
     currentGameStatusElem,
@@ -60,7 +60,10 @@ function gameOver() {
   );
 
   gameInProgress = false;
-  startGameBtnElem.disabled = false;
+  startGameBtnElem.style.display = "block";
+  cards.forEach((card) => {
+    card.classList.add("hoverable");
+  });
 }
 
 function endRound() {
@@ -102,12 +105,7 @@ function calculateScoreToAdd(roundNum) {
 
 function updateScore() {
   calculateScoreToAdd(roundNum);
-  updateStatusElement(
-    scoreElem,
-    "block",
-    primaryColor,
-    `<span class="badge">${score}</span>`
-  );
+  updateStatusElement(scoreElem, "block", primaryColor, score);
 }
 
 function updateStatusElement(elem, display, color, innerHTML) {
@@ -180,6 +178,9 @@ function checkForIncompleteGame() {
 function startGame() {
   intializeNewGame();
   startRound();
+  cards.forEach((card) => {
+    card.classList.remove("hoverable");
+  });
 }
 
 function intializeNewGame() {
@@ -190,18 +191,8 @@ function intializeNewGame() {
   shufflingInProgress = false;
   updateStatusElement(scoreContainerElem, "flex");
   updateStatusElement(roundContainerElem, "flex");
-  updateStatusElement(
-    scoreElem,
-    "block",
-    primaryColor,
-    `Score <span class="badge">${score}</span>`
-  );
-  updateStatusElement(
-    roundElem,
-    "block",
-    primaryColor,
-    `Round <span class="badge">${roundNum}</span>`
-  );
+  updateStatusElement(scoreElem, "block", primaryColor, score);
+  updateStatusElement(roundElem, "block", primaryColor, roundNum);
 }
 
 function startRound() {
@@ -213,7 +204,7 @@ function startRound() {
 
 function intializeNewRound() {
   roundNum++;
-  startGameBtnElem.disabled = true;
+  startGameBtnElem.style.display = "none";
   gameInProgress = true;
   shufflingInProgress = true;
   cardsRevealed = false;
@@ -223,12 +214,7 @@ function intializeNewRound() {
     primaryColor,
     "Shuffling..."
   );
-  updateStatusElement(
-    roundElem,
-    "block",
-    primaryColor,
-    `Round <span class="badge">${roundNum}</span>`
-  );
+  updateStatusElement(roundElem, "block", primaryColor, roundNum);
 }
 
 function collectCards() {
@@ -399,6 +385,7 @@ function createCard(cardItem) {
 
   addClassToElement(cardElem, "card");
   addClassToElement(cardElem, "fly-in");
+  addClassToElement(cardElem, "hoverable");
   addIdToElement(cardElem, cardItem.id);
 
   addClassToElement(cardInsideElem, "card-inside");

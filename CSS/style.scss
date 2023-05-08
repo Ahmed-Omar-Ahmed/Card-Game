@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Sigmar&display=swap");
+
 :root {
   --card-width: 157px;
   --card-height: 220px;
@@ -11,11 +13,152 @@
 
 * {
   box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
 }
 
 body {
   height: 100vh;
   background-color: #fffffa;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+
+  .title {
+    display: flex;
+    justify-content: center;
+
+    span {
+      font-family: "Sigmar", cursive;
+      font-size: 3.7rem;
+      color: transparent;
+      text-align: center;
+      background-image: url("/Images/Title-bg.png");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-clip: text;
+    }
+  }
+
+  .header-round-info-container {
+    display: flex;
+    justify-content: space-evenly;
+
+    .header-img-container,
+    .header-score-container,
+    .header-round-container {
+      width: 15%;
+      min-width: 170px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .header-score-container,
+    .header-round-container {
+      .stats-aligner {
+        border: 2px solid #000;
+        width: 80%;
+        height: 40%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--badge-bg-color);
+        border-radius: 15px;
+        overflow: hidden;
+        h2 {
+          text-align: center;
+          border-right: 2px solid #fffffa;
+          padding-inline: 5px;
+          margin: 0;
+        }
+
+        span {
+          width: 100%;
+          text-align: center;
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+    .header-img-container {
+      .header-img {
+        height: 75px;
+        border-radius: 5px;
+        border: 3px solid #000;
+        padding: 5px;
+        box-shadow: 0 4px 8px 0 #00000033;
+        rotate: -3deg;
+      }
+    }
+  }
+
+  .game-status-container,
+  .action-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .game-status-container {
+    .current-status {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  }
+  .action-btn {
+    .start-game {
+      scale: 0;
+      opacity: 0;
+      background-color: #111827;
+      border: 1px solid transparent;
+      border-radius: 0.75rem;
+      box-sizing: border-box;
+      color: #ffffff;
+      cursor: pointer;
+      flex: 0 0 auto;
+      font-family: "Inter var", ui-sans-serif, system-ui, -apple-system,
+        system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+        sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+      font-size: 1.125rem;
+      font-weight: 600;
+      line-height: 1.5rem;
+      padding: 0.75rem 1.2rem;
+      text-align: center;
+      text-decoration: none #6b7280 solid;
+      text-decoration-thickness: auto;
+      transition-duration: 0.2s;
+      transition-property: background-color, border-color, color, fill, stroke,
+        scale, opacity;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      width: auto;
+
+      &:hover {
+        background-color: #374151;
+      }
+
+      &:focus {
+        box-shadow: none;
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+      }
+
+      &:disabled {
+        pointer-events: none;
+        background-color: #a9a9a9;
+      }
+    }
+  }
 }
 
 main {
@@ -69,11 +212,24 @@ main {
       cursor: pointer;
       transition: transform 0.6s ease-in-out;
 
-      &:hover {
-        .card-inside {
-          transform: rotate3d(0, 1, 0, 180deg);
-          // animation: revolve 1s linear 2 forwards;
+      &.hoverable {
+        &:hover {
+          .card-inside {
+            transform: rotate3d(0, 1, 0, 180deg);
+          }
         }
+      }
+
+      &.shuffle-left {
+        transform: translateX(300px) translateY(40px);
+      }
+
+      &.shuffle-right {
+        transform: translateX(-350px) translateY(-40px);
+      }
+
+      &.fly-in {
+        transform: translateY(-1000px) translateX(-600px) rotate(45deg);
       }
 
       .card-inside {
@@ -109,132 +265,6 @@ main {
   }
 }
 
-// @keyframes revolve {
-//   from {
-//     transform: rotateX(0) rotateY(0) rotateZ(0);
-//   }
-
-//   to {
-//     transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg);
-//   }
-// }
-
-header {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.title {
-  display: flex;
-  justify-content: center;
-}
-
-.header-round-info-container {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.header-img-container,
-.header-score-container,
-.header-round-container {
-  width: 150px;
-}
-
-.game-status-container,
-.action-btn,
-.header-img-container,
-.header-score-container,
-.header-round-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.header-img {
-  height: 75px;
-  border-radius: 5px;
-  border: 3px solid #000;
-  padding: 5px;
-  box-shadow: 0 4px 8px 0 #00000033;
-  rotate: -3deg;
-}
-
-.badge {
-  background-color: var(--badge-bg-color);
-  color: var(--secondary-color);
-  padding: 2px 10px 3px;
-  border-radius: 15px;
-}
-
-.start-game {
-  scale: 0;
-  opacity: 0;
-  background-color: #111827;
-  border: 1px solid transparent;
-  border-radius: 0.75rem;
-  box-sizing: border-box;
-  color: #ffffff;
-  cursor: pointer;
-  flex: 0 0 auto;
-  font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.5rem;
-  padding: 0.75rem 1.2rem;
-  text-align: center;
-  text-decoration: none #6b7280 solid;
-  text-decoration-thickness: auto;
-  transition-duration: 0.2s;
-  transition-property: background-color, border-color, color, fill, stroke,
-    scale, opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: auto;
-}
-
-.start-game:hover {
-  background-color: #374151;
-}
-
-.start-game:focus {
-  box-shadow: none;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-}
-
-.start-game:disabled {
-  pointer-events: none;
-  background-color: #a9a9a9;
-}
-
-@media (min-width: 768px) {
-  .start-game {
-    padding: 0.75rem 1.5rem;
-  }
-}
-
-.current-status {
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.card.shuffle-left {
-  transform: translateX(300px) translateY(40px);
-}
-
-.card.shuffle-right {
-  transform: translateX(-350px) translateY(-40px);
-}
-
-.card.fly-in {
-  transform: translateY(-1000px) translateX(-600px) rotate(45deg);
-}
-
 @media screen and (width <= 600px) {
   :root {
     --card-width: 120px;
@@ -242,30 +272,66 @@ header {
     --card-horizontal-space: 50px;
   }
 
-  .header-score-container,
-  .header-round-container {
-    h2 {
-      font-size: 1rem;
+  header {
+    width: 100%;
 
+    .title {
       span {
-        width: 20px;
+        font-size: 3rem;
+      }
+    }
+
+    .game-status-container {
+      .current-status {
+        font-size: 1.2rem;
+      }
+    }
+
+    .header-round-info-container {
+      .header-img-container {
+        .header-img {
+          height: 55px;
+        }
+      }
+
+      .header-score-container,
+      .header-round-container {
+        min-width: 150px;
+        width: 150px;
+        .stats-aligner {
+          height: 90%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          h2 {
+            width: 100%;
+            border-bottom: 2px solid #fffffa;
+            border-right: none;
+            font-size: 1.2rem;
+            flex: 1;
+            padding-top: 5px;
+          }
+
+          span {
+            width: 100%;
+            text-align: center;
+            font-size: 1.2rem;
+            flex: 1;
+          }
+        }
       }
     }
   }
 
-  .card-container {
-    width: calc(
-      var(--card-width) * (var(--num-cards) / 2) + var(--card-horizontal-space)
-    );
-  }
-
   main {
     height: 50%;
-  }
-  .current-status {
-    font-size: 1.2rem;
-  }
-  .header-img {
-    height: 55px;
+
+    .card-container {
+      width: calc(
+        var(--card-width) * (var(--num-cards) / 2) +
+          var(--card-horizontal-space)
+      );
+    }
   }
 }
